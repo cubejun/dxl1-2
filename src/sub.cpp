@@ -9,12 +9,12 @@
 using namespace std::placeholders;
 void mysub_callback(rclcpp::Node::SharedPtr node, Dxl& dxl, const geometry_msgs::msg::Twist::SharedPtr msg)
 {
-    int rrpm, lrpm;
-    RCLCPP_INFO(node->get_logger(), "Received message: %lf,%lf", msg->linear.x, msg->angular.y);
-    rrpm = (msg->linear.x * 60)/(2*pi*wheel_radius)+(msg->angular.z * 60 * wheel_separation)/(2*pi*wheel_radius);
-    lrpm = (msg->linear.x * 60)/(2*pi*wheel_radius);
+    double rrpm, lrpm;
+    rrpm = (msg->linear.x * 60)/(2*pi*wheel_radius)-(msg->angular.z*60*wheel_separation)/(4*pi*wheel_radius);
+    lrpm = (-msg->linear.x * 60)/(2*pi*wheel_radius)+(-msg->angular.z*60*wheel_separation)/(4*pi*wheel_radius);
     // rrpm = (2*pi*wheel_radius)/(msg->linear.x * 60)+((2*pi*wheel_radius)/(msg->angular.z * 60))*wheel_separation;
     // lrpm = (2*pi*wheel_radius)/(msg->linear.x * 60);
+    RCLCPP_INFO(node->get_logger(), "Received message: %lf,%lf", rrpm, lrpm);
     dxl.setVelocity(rrpm, lrpm);
 
 }
